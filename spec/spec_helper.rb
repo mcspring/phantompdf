@@ -1,3 +1,4 @@
+require 'phantomjs'
 require 'phantompdf'
 
 RSpec.configure do |config|
