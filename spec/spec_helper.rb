@@ -3,6 +3,8 @@ require 'phantompdf'
 require 'pdf-reader'
 require 'byebug'
 
+require 'rack/test'
+
 RSpec.configure do |config|
   # some staff goes here
 end
