@@ -3,4 +3,5 @@ module PhantomPDF
   class SourceTypeError < Error; end
   class DestinationTypeError < Error; end
   class DestinationPermitError < Error; end
+  class RenderingError < Error; end
 end
