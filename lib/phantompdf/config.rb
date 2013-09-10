@@ -1,7 +1,7 @@
 module PhantomPDF
   class Config
-    attr_writer :phantomjs
     attr_accessor :default_options
+    attr_reader :phantomjs
 
     def initialize(options={})
       @default_options = {
@@ -23,7 +23,7 @@ module PhantomPDF
       @phantomjs ||= ::Phantomjs.path
     end
 
-    [:format, :header, :footer, :margin, :zoom, :orientation, :cookies, :timeout, :rendering_timeout].each do |key|
+    [:format, :header, :footer, :margin, :orientation, :zoom, :cookies, :timeout, :rendering_timeout].each do |key|
       define_method("#{key}=") do |val|
         @default_options[key] = val
       end
@@ -39,8 +39,8 @@ module PhantomPDF
   #     config.header            = nil,
   #     config.footer            = nil,
   #     config.margin            = '1cm',
-  #     config.zoom              = 1,
   #     config.orientation       = 'portrait',
+  #     config.zoom              = 1,
   #     config.cookies           = {},
   #     config.timeout           = 90000,
   #     config.rendering_timeout = 1000
