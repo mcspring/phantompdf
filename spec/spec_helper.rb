@@ -1,5 +1,6 @@
 require 'phantomjs'
 require 'phantompdf'
+require 'pdf-reader'
 require 'byebug'
 
 RSpec.configure do |config|
