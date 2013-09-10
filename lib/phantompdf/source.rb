@@ -9,7 +9,9 @@ module PhantomPDF
     end
 
     def url?
-      @source.match(URI::regexp)
+      !URI.parse(@source).scheme.nil?
+    rescue
+      false
     end
 
     def file?

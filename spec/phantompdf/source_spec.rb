@@ -3,8 +3,8 @@ require 'spec_helper'
 module PhantomPDF
   describe Source do
     before do
-      @url = 'http://www.test.com'
-      @file = File.expand_path('../../fixtures/file.html', __FILE__)
+      @url = ['http://www.test.com', 'file://tmp/phantompdf.html', 'ftp://phantompdf:passwd@test.com/phantompdf.html'].sample
+      @file = File.expand_path('../../fixtures/phantompdf.html', __FILE__)
       @html = File.read(@file)
 
       @url_source = Source.new(@url)
