@@ -68,10 +68,26 @@ module PhantomPDF
       [Assets.javascripts('rasterize'),
        @input.to_s,
        @output,
-       format, (header.nil? || header.empty? ? nil : "1.2cm*#{header}"), (footer.nil? || footer.empty? ? nil : "0.7cm*#{footer}"),
+       format, dump_header(header), dump_footer(footer),
        margin, orientation, zoom,
        cookie_file,
        rendering_timeout, timeout].map(&:to_s)
+    end
+
+    def dump_header(header)
+      return nil if header.nil? || header.empty?
+
+      return "1.2cm*#{header}" unless header.split('*')[0].to_f > 0
+
+      header
+    end
+
+    def dump_footer(footer)
+      return nil if footer.nil? || footer.empty?
+
+      return "0.7cm*#{header}" unless footer.split('*')[0].to_f > 0
+
+      footer
     end
 
     def dump_cookies(cookies)
