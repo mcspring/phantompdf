@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phantompdf (1.0.0)
+    phantompdf (1.0.1)
       json
       phantomjs
 
@@ -32,7 +32,7 @@ GEM
     hashery (2.1.1)
     http_parser.rb (0.5.3)
     json (1.8.0)
-    mime-types (1.24)
+    mime-types (1.25)
     mini_portile (0.5.1)
     multi_json (1.7.9)
     nokogiri (1.6.0)
@@ -65,10 +65,10 @@ GEM
     rspec-mocks (2.13.1)
     ruby-rc4 (0.1.5)
     rubyzip (0.9.9)
-    selenium-webdriver (2.35.0)
+    selenium-webdriver (2.35.1)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
-      rubyzip
+      rubyzip (< 1.0.0)
       websocket (~> 1.0.4)
     ttfunk (1.0.3)
     websocket (1.0.7)
