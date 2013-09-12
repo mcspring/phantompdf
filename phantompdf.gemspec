@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.email = %w(Heresy.Mc@gmail.com)
   spec.description = %q{Generate PDF from HTML using PhantomJS}
   spec.summary = %q{A PhantomJS based PDF generator}
+  spec.license = 'MIT'
   spec.homepage = 'https://github.com/mcspring/phantompdf'
   spec.files = `git ls-files`.split($/)
   spec.executables = spec.files.grep(%r{^bin/}).map { |f| File.basename(f) }
