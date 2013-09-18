@@ -1,3 +1,4 @@
+require 'phantomjs'
 require 'phantompdf/version'
 require 'phantompdf/error'
 require 'phantompdf/assets'
