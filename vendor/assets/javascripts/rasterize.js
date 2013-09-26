@@ -8,7 +8,94 @@ if (system_args_length < 3 || system_args_length > 12) {
   phantom.exit(1);
 }
 
-var input = system.args[1],
+var // PhantomJS CAN NOT handle images in custom header/footer,
+    // and this is used to fix the issue.
+    io_images = [],
+
+    is_html = function(s){
+      return /<([a-z]+?\d*?)[^>]*?>[^\0]*?<\/\1>/i.test(s) === true;
+    },
+
+    extract_images = function(html){
+      var image_tags = html.match(/<img[^>]+?src=(["'])https?:\/\/[^>]+?\1[^>]*?\/?>/ig),
+          image_tags_len = image_tags.length,
+          i, image;
+      if (image_tags_len < 1) {
+        return;
+      }
+
+      for (i=0; i<image_tags_len; i++) {
+        image = image_tags[i].match(/src=(["'])(https?:\/\/[^>]+?)\1/i);
+
+        if (image.length == 3 && io_images.indexOf(image[2]) < 0) {
+          io_images[io_images.length] = image[2];
+        }
+      }
+    },
+    inject_images = function(html){
+      var images_num = io_images.length;
+      if (images_num < 1) {
+        return html;
+      }
+
+      var klass, klasses = [],
+          html_injected, html_temp,
+          i, fragments = ['<style type="text/css">'];
+      for (i=0; i<images_num; i++) {
+        klass = 'phantompdf-' + i;
+
+        klasses[klasses.length] = klass;
+        fragments[fragments.length] = '.' + klass + '{background:url(' + io_images[i] + ');}';
+      }
+      fragments[fragments.length] = '</style>';
+      fragments[fragments.length] = '<div class="' + klasses.join(' ') + '" style="display:none;width:0;height:0;font-size:0;"></div>';
+
+      html_injected = fragments.join('');
+
+      html_temp = html.split('</body>');
+      if (html_temp.length > 1) {
+        html_temp[html_temp.length - 1] = html_injected + html_temp.slice(-1)[0];
+
+        html = html_temp.join('</body>');
+      } else {
+        html = html + html_injected;
+      }
+
+      return html;
+    },
+
+    render_pdf = function(html){
+      if (!is_html(html)) {
+        phantom.exit(1);
+
+        throw 'Invalid HTML source!';
+      }
+
+      page.content = inject_images(html);
+
+      window.setTimeout(function(){
+        page.render(output + '_tmp.pdf');
+
+        if (fs.exists(output)) {
+          fs.remove(output);
+        }
+
+        try {
+          fs.move(output + '_tmp.pdf', output);
+
+          // return pdf file path
+          console.log(output);
+        } catch (e) {
+          phantom.exit(1);
+
+          throw e;
+        }
+
+        phantom.exit();
+      }, render_timeout);
+    },
+
+    input = system.args[1],
     output = system.args[2],
 
     margin = system.args[6] || '0cm',
@@ -21,8 +108,9 @@ var input = system.args[1],
     render_timeout = system.args[10] || 10000,
     timeout = system.args[11] || 90000;
 
-window.setTimeout(function () {
+window.setTimeout(function(){
   console.log("Shit's being weird no result within " + timeout + "ms");
+
   phantom.exit(1);
 }, timeout);
 
@@ -38,6 +126,8 @@ if (output.substr(-4) === '.pdf') {
   if (system_args_length > 4) {
     header = system.args[4].split('*');
     if (header.length >= 2) {
+      extract_images(header.join('*'));
+
       paper_size_options['header'] = {
         height: header.shift(),
         contents: phantom.callback(function(pageNum, pageTotal){
@@ -50,6 +140,8 @@ if (output.substr(-4) === '.pdf') {
   if (system_args_length > 5) {
     footer = system.args[5].split('*');
     if (footer.length >= 2) {
+      extract_images(footer.join('*'));
+
       paper_size_options['footer'] = {
         height: footer.shift(),
         contents: phantom.callback(function(pageNum, pageTotal){
@@ -63,52 +155,34 @@ if (output.substr(-4) === '.pdf') {
 }
 page.zoomFactor = zoom;
 
-if (/<([a-z]+?\d*?).*?>[^\0]*?<\/\1>/i.test(input) === true) {
-  page.content = input;
+// cookies injection
+if (cookie_file) {
+  try {
+    fd = fs.open(cookie_file, 'r');
+    cookies = JSON.parse(fd.read());
+    fs.remove(cookie_file);
 
-  window.setTimeout(function () {
-    page.render(output + '_tmp.pdf');
 
-    if (fs.exists(output)) {
-      fs.remove(output);
-    }
+    phantom.cookiesEnabled = true;
+    phantom.cookies = cookies;
+  } catch (e) {
+    // ignore
+  }
+}
 
-    try {
-      fs.move(output + '_tmp.pdf', output);
-
-      console.log(output);
-    } catch (e) {
-      phantom.exit(1);
-      throw e;
-    }
-
-    phantom.exit();
-  }, render_timeout);
-} else {
+if (is_html(input)) {  // for html string
+  render_pdf(input);
+} else {  // for url resource
   var statusCode = null;
 
-  if (cookie_file) {
-    try {
-      fd = fs.open(cookie_file, 'r');
-      cookies = JSON.parse(fd.read());
-      fs.remove(cookie_file);
-
-
-      phantom.cookiesEnabled = true;
-      phantom.cookies = cookies;
-    } catch (e) {
-      // console.log(e);
-    }
-  }
-
   // determine the statusCode
-  page.onResourceReceived = function (resource) {
+  page.onResourceReceived = function(resource){
     if (new RegExp('^'+input).test(resource.url)) {
       statusCode = resource.status;
     }
   };
 
-  page.open(input, function (status) {
+  page.open(input, function(status){
     if (status !== 'success' || (statusCode !== null && statusCode != 200)) {
       console.log(statusCode, 'Failed to load the input!');
 
@@ -120,29 +194,13 @@ if (/<([a-z]+?\d*?).*?>[^\0]*?<\/\1>/i.test(input) === true) {
         fs.touch(output);
       } catch (e) {
         phantom.exit(1);
+
         throw e;
       }
 
       phantom.exit(1);
     } else {
-      window.setTimeout(function () {
-        page.render(output + '_tmp.pdf');
-
-        if (fs.exists(output)) {
-          fs.remove(output);
-        }
-
-        try {
-          fs.move(output + '_tmp.pdf', output);
-
-          console.log(output);
-        } catch (e) {
-          phantom.exit(1);
-          throw e;
-        }
-
-        phantom.exit();
-      }, render_timeout);
+      render_pdf(page.content);
     }
   });
 }

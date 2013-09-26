@@ -72,6 +72,7 @@ module PhantomPDF
         before :all do
           @url = 'http://www.google.com'
           @file = '/tmp/google.pdf'
+          @image = 'http://www.google.com/images/srpr/logo4w.png'
         end
 
         after :each do
@@ -87,6 +88,12 @@ module PhantomPDF
           pdf_content.should include(header)
         end
 
+        it "should support images in custom header" do
+          header = "1.8cm*PhantomPDF header!<img src=\"#{@image}\" style=\"float:right;\"/>"
+
+          Generator.new(@url, @file, {header: header}).generate.should be_pdf_file
+        end
+
         pending "should support custom :footer" do
           header = 'Hello, PhantomPDF footer!'
 
@@ -94,6 +101,12 @@ module PhantomPDF
 
           pdf_content = PDF::Reader.new(@file).page(1).text
           pdf_content.should include(header)
+        end
+
+        it "should support images in custom header or footer" do
+          footer = "1.8cm*PhantomPDF footer!<img src=\"#{@image}\" style=\"float:right;\"/>"
+
+          Generator.new(@url, @file, {footer: footer}).generate.should be_pdf_file
         end
       end
     end
