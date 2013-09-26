@@ -24,7 +24,7 @@ module PhantomPDF
         return nil
       end
 
-      result.strip
+      result.split("\n").compact.pop
     end
 
     def generate!(path=nil)
