@@ -18,11 +18,13 @@ var // PhantomJS CAN NOT handle images in custom header/footer,
 
     extract_images = function(html){
       var image_tags = html.match(/<img[^>]+?src=(["'])https?:\/\/[^>]+?\1[^>]*?\/?>/ig),
-          image_tags_len = image_tags.length,
+          image_tags_len,
           i, image;
-      if (image_tags_len < 1) {
+      if (image_tags === null) {
         return;
       }
+
+      image_tags_len = image_tags.length;
 
       for (i=0; i<image_tags_len; i++) {
         image = image_tags[i].match(/src=(["'])(https?:\/\/[^>]+?)\1/i);
