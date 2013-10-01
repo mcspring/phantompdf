@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/colszowka/phantomjs-gem.git
+  revision: f8a30905c28dac99490efaa608f1af59618616cb
+  specs:
+    phantomjs (1.9.2.0)
+
 PATH
   remote: .
   specs:
@@ -13,39 +19,17 @@ GEM
     byebug (2.2.2)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
-    capybara (2.1.0)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (~> 2.0)
-    cliver (0.2.2)
     columnize (0.3.6)
     debugger-linecache (1.2.0)
     diff-lcs (1.2.4)
     hashery (2.1.1)
     json (1.8.0)
-    mime-types (1.25)
-    mini_portile (0.5.1)
-    multi_json (1.8.0)
-    nokogiri (1.6.0)
-      mini_portile (~> 0.5.0)
     pdf-reader (1.3.3)
       Ascii85 (~> 1.0.0)
       afm (~> 0.2.0)
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    phantomjs (1.8.1.1)
-      poltergeist
-    poltergeist (1.4.1)
-      capybara (~> 2.1.0)
-      cliver (~> 0.2.1)
-      multi_json (~> 1.0)
-      websocket-driver (>= 0.2.0)
-    rack (1.5.2)
-    rack-test (0.6.2)
-      rack (>= 1.0)
     rake (10.1.0)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
@@ -57,9 +41,6 @@ GEM
     rspec-mocks (2.14.3)
     ruby-rc4 (0.1.5)
     ttfunk (1.0.3)
-    websocket-driver (0.3.0)
-    xpath (2.0.0)
-      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
@@ -67,6 +48,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   pdf-reader
+  phantomjs!
   phantompdf!
   rake
   rspec
