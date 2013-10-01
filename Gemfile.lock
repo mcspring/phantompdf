@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phantompdf (1.0.4)
+    phantompdf (1.0.5)
       json
       phantomjs
 
