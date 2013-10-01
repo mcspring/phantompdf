@@ -68,15 +68,22 @@ var // PhantomJS CAN NOT handle images in custom header/footer,
 
     render_pdf = function(html){
       if (!is_html(html)) {
-        phantom.exit(1);
+        console.log('Invalid HTML source for rendering!');
 
-        throw 'Invalid HTML source!';
+        phantom.exit(1);
       }
 
       page.content = inject_images(html);
 
       window.setTimeout(function(){
-        page.render(output + '_tmp.pdf');
+        var output_tmp = output + '_tmp.pdf';
+
+        page.render(output_tmp);
+        if (!fs.exists(output_tmp)) {
+          console.log('Failed to render pdf tmp file!');
+
+          phantom.exit(1);
+        }
 
         if (fs.exists(output)) {
           fs.remove(output);
@@ -88,9 +95,9 @@ var // PhantomJS CAN NOT handle images in custom header/footer,
           // return pdf file path
           console.log(output);
         } catch (e) {
-          phantom.exit(1);
+          console.log(e.message);
 
-          throw e;
+          phantom.exit(1);
         }
 
         phantom.exit();
@@ -195,9 +202,9 @@ if (is_html(input)) {  // for html string
       try {
         fs.touch(output);
       } catch (e) {
-        phantom.exit(1);
+        console.log(e.message);
 
-        throw e;
+        phantom.exit(1);
       }
 
       phantom.exit(1);
