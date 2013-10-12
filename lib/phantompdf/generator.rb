@@ -85,7 +85,7 @@ module PhantomPDF
     def dump_footer(footer)
       return nil if footer.nil? || footer.empty?
 
-      return "0.7cm*#{header}" unless footer.split('*')[0].to_f > 0
+      return "0.7cm*#{footer}" unless footer.split('*')[0].to_f > 0
 
       footer
     end
