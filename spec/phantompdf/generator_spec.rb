@@ -1,12 +1,16 @@
 require 'spec_helper'
 
 module PhantomPDF
-  describe Generator do
-    let(:fixtures_root) {
-      File.expand_path('../../fixtures', __FILE__)
-    }
+  fixtures_root = File.expand_path('../../fixtures', __FILE__)
 
-    subject { Generator.new("#{fixtures_root}/phantompdf.html") }
+  resource = {
+    url: 'http://www.google.com',
+    file: "#{fixtures_root}/phantompdf.html",
+    html: File.read("#{fixtures_root}/phantompdf.html")
+  }.values.sample
+
+  describe Generator do
+    subject { Generator.new(resource) }
 
     context "attributes" do
       [:input, :output, :config].each do |rwattr|
@@ -21,105 +25,103 @@ module PhantomPDF
     end
 
     context "#generate" do
-      fixtures_root = File.expand_path('../../fixtures', __FILE__)
-
-      {
-        url: 'http://www.google.com',
-        file: "#{fixtures_root}/phantompdf.html",
-        html: File.read("#{fixtures_root}/phantompdf.html")
-      }.each do |key, value|
-        context "with #{key}" do
-          it "should works" do
-            Generator.new(value).generate.should be_pdf_file
-          end
-        end
+      it "should works" do
+        Generator.new(resource).generate.should be_pdf_file
       end
 
       context "with output" do
-        before :all do
-          @url = 'http://www.google.com'
-          @file = '/tmp/google.pdf'
+        before :each do
+          @destination = '/tmp/google.pdf'
+
+          File.unlink(@destination) if File.exist?(@destination)
         end
 
         after :each do
-          File.exist?(@file) && File.unlink(@file)
+          File.unlink(@destination) if File.exist?(@destination)
         end
 
-        it "should generate pdf file following :output" do
-          File.exist?(@file).should be_false
-          Generator.new(@url, @file).generate
-          File.exist?(@file).should be_true
+        it "should generate pdf file following output" do
+          File.exist?(@destination).should be_false
+          Generator.new(resource, @destination).generate
+          File.exist?(@destination).should be_true
 
-          @file.should be_pdf_file
+          @destination.should be_pdf_file
         end
 
-        it "should raise PhantomPDF::DestinationTypeError when :output is not a string" do
+        it "should raise PhantomPDF::DestinationTypeError when output is not a string" do
           expect{
-            Generator.new(@url, Object.new)
+            Generator.new(resource, Object.new)
           }.to raise_error(PhantomPDF::DestinationTypeError)
         end
 
-        it "should raise PhantomPDF::DestinationPermitError when :output is not writable" do
+        pending "should raise PhantomPDF::DestinationPermitError when output is not writable" do
           File.stub(:writable?, '/tmp') { false }
 
           expect{
-            Generator.new(@url, @file)
+            Generator.new(resource, @destination)
           }.to raise_error(PhantomPDF::DestinationPermitError)
         end
       end
 
-      context "with options for pdf format" do
-        before :all do
-          @url = 'http://www.google.com'
-          @file = '/tmp/google.pdf'
-          @image = 'http://www.google.com/images/srpr/logo4w.png'
+      context "with options" do
+        before :each do
+          @destination = '/tmp/google.pdf'
+          @custom_image = 'http://www.google.com/images/srpr/logo4w.png'
+
+          File.unlink(@destination) if File.exist?(@destination)
         end
 
         after :each do
-          File.exist?(@file) && File.unlink(@file)
+          File.unlink(@destination) if File.exist?(@destination)
         end
 
-        pending "should support custom :header" do
+        it "should support custom header" do
           header = 'Hello, PhantomPDF header!'
 
-          Generator.new(@url, @file, {:header => header}).generate
+          Generator.new(resource, @destination, {:header => header}).generate.should be_pdf_file
 
-          pdf_content = PDF::Reader.new(@file).page(1).text
-          pdf_content.should include(header)
+          # we CANNOT reader the file as PDF
+          # pdf_content = PDF::Reader.new(@destination).page(1).text
+          # pdf_content.should include(header)
         end
 
         it "should support images in custom header" do
-          header = "1.8cm*PhantomPDF header!<img src=\"#{@image}\" style=\"float:right;\"/>"
+          header = "1.8cm*PhantomPDF header!<img src=\"#{@custom_image}\" style=\"float:right;\"/>"
 
-          Generator.new(@url, @file, {header: header}).generate.should be_pdf_file
+          Generator.new(resource, @destination, {:header => header}).generate.should be_pdf_file
+
+          # we CANNOT reader the file as PDF
+          # pdf_content = PDF::Reader.new(@destination).page(1).text
+          # pdf_content.should include(@custom_image)
         end
 
-        pending "should support custom :footer" do
-          header = 'Hello, PhantomPDF footer!'
+        it "should support custom footer" do
+          footer = 'Hello, PhantomPDF footer!'
 
-          Generator.new(@url, @file, {:footer => header}).generate
+          Generator.new(resource, @destination, {:footer => footer}).generate.should be_pdf_file
 
-          pdf_content = PDF::Reader.new(@file).page(1).text
-          pdf_content.should include(header)
+          # we CANNOT reader the file as PDF
+          # pdf_content = PDF::Reader.new(@destination).page(1).text
+          # pdf_content.should include(header)
         end
 
-        it "should support images in custom header or footer" do
-          footer = "1.8cm*PhantomPDF footer!<img src=\"#{@image}\" style=\"float:right;\"/>"
+        it "should support images in custom footer" do
+          footer = "1.8cm*PhantomPDF footer!<img src=\"#{@custom_image}\" style=\"float:right;\"/>"
 
-          Generator.new(@url, @file, {footer: footer}).generate.should be_pdf_file
+          Generator.new(resource, @destination, {:footer => footer}).generate.should be_pdf_file
+
+          # we CANNOT reader the file as PDF
+          # pdf_content = PDF::Reader.new(@destination).page(1).text
+          # pdf_content.should include(@custom_image)
         end
       end
     end
 
     context "#generate!" do
-      before :all do
-        @url = 'http://www.google.com'
-      end
-
       it "should raise PhantomPDF::RenderingError when failed to generate" do
         $?.stub(:exitstatus) { 1 }
 
-        generator = Generator.new(@url)
+        generator = Generator.new(resource)
         generator.stub(:run) { 'rendering error' }
 
         expect{
@@ -129,12 +131,8 @@ module PhantomPDF
     end
 
     context "#to_string" do
-      before :all do
-        @url = 'http://www.google.com'
-      end
-
-      it "should return string" do
-        Generator.new(@url).to_string.should be_pdf_string
+      it "should return string of PDF file" do
+        Generator.new(resource).to_string.should be_pdf_string
       end
     end
   end
