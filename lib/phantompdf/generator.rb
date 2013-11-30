@@ -66,7 +66,7 @@ module PhantomPDF
       cookie_file = dump_cookies(options[:cookies])
 
       [Assets.javascripts('rasterize'),
-       @input.to_s,
+       @input,
        @output,
        format, dump_header(header), dump_footer(footer),
        margin, orientation, zoom,
