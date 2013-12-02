@@ -18,6 +18,9 @@ var page = require('webpage').create(),
 
       phantom.exit(code || 0);
     };
+if (phantom.version.major < 1 || phantom.version.minor < 7) {
+  phantom_exit(1, "PhantomJS version must greater than 1.7!");
+}
 if (system_args_len < 3 || system_args_len > 12) {
   phantom_exit(1, "Usage: phantomjs rasterize.js SOURCE DESTINATION [paperWidth*paperHeight|paperFormat] [header] [footer] [margin] [orientation] [zoom] [cookies] [render_timeout] [timeout]\n     : paper (pdf output) examples: \"5in*7.5in\", \"10cm*20cm\", \"A4\", \"Letter\"");
 }
