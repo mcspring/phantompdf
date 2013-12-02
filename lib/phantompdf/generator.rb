@@ -63,14 +63,14 @@ module PhantomPDF
       format, header, footer = options[:format], options[:header], options[:footer]
       zoom, margin, orientation = options[:zoom], options[:margin], options[:orientation]
       rendering_timeout, timeout = options[:rendering_timeout], options[:timeout]
-      cookie_file = dump_cookies(options[:cookies])
+      cookies = dump_cookies(options[:cookies])
 
       [Assets.javascripts('rasterize'),
        @input,
        @output,
        format, dump_header(header), dump_footer(footer),
        margin, orientation, zoom,
-       cookie_file,
+       cookies,
        rendering_timeout, timeout].map(&:to_s)
     end
 
@@ -91,14 +91,7 @@ module PhantomPDF
     end
 
     def dump_cookies(cookies)
-      cookie_host = @input.url? ? URI::parse(@input.to_s).host : '/'
-
-      cookie_json = cookies.inject([]) {|ck, (k, v)| ck.push({:name => k, :value => v, :domain => cookie_host}); ck}.to_json
-      return nil if cookie_json.empty?
-
-      cookie_file = Tempfile.new('temp_cookie_file')
-      cookie_file.write(cookie_json)
-      cookie_file.path
+      JSON.dump(cookies)
     end
   end
 end

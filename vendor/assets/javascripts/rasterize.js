@@ -19,7 +19,7 @@ var page = require('webpage').create(),
       phantom.exit(code || 0);
     };
 if (system_args_len < 3 || system_args_len > 12) {
-  phantom_exit(1, "Usage: phantomjs rasterize.js SOURCE DESTINATION [paperWidth*paperHeight|paperFormat] [header] [footer] [margin] [orientation] [zoom] [cookie_file] [render_timeout] [timeout]\n     : paper (pdf output) examples: \"5in*7.5in\", \"10cm*20cm\", \"A4\", \"Letter\"");
+  phantom_exit(1, "Usage: phantomjs rasterize.js SOURCE DESTINATION [paperWidth*paperHeight|paperFormat] [header] [footer] [margin] [orientation] [zoom] [cookies] [render_timeout] [timeout]\n     : paper (pdf output) examples: \"5in*7.5in\", \"10cm*20cm\", \"A4\", \"Letter\"");
 }
 
 var input = system.args[1],
@@ -29,8 +29,7 @@ var input = system.args[1],
     orientation = system.args[7] || 'portrait',
     zoom = system.args[8] || '1.0',
 
-    cookie_file = system.args[9],
-    cookies = {},
+    cookies = system.args[9],
 
     render_timeout = system.args[10] || 10000,
     timeout = system.args[11] || 90000,
@@ -173,17 +172,15 @@ if (output.substr(-4) === '.pdf') {
 page.zoomFactor = zoom;
 
 // cookies injection
-if (cookie_file) {
+phantom.cookiesEnabled = false;
+if (cookies) {
   try {
-    fd = fs.open(cookie_file, 'r');
-    cookies = JSON.parse(fd.read());
-    fs.remove(cookie_file);
-
+    cookies = JSON.parse(cookies);
 
     phantom.cookiesEnabled = true;
     phantom.cookies = cookies;
   } catch (e) {
-    // ignore
+    phantom.cookiesEnabled = false;
   }
 }
 
