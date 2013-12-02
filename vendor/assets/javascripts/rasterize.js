@@ -2,6 +2,7 @@ var page = require('webpage').create(),
     fs = require('fs'),
     system = require('system'),
     system_args_len = system.args.length,
+    timer = null,
     phantom_exit = function(code, message){
       if (message) {
         console.log(message);
@@ -11,14 +12,32 @@ var page = require('webpage').create(),
         page.close();
       }
 
+      if (timer) {
+        clearTimeout(timer);
+      }
+
       phantom.exit(code || 0);
     };
 if (system_args_len < 3 || system_args_len > 12) {
   phantom_exit(1, "Usage: phantomjs rasterize.js SOURCE DESTINATION [paperWidth*paperHeight|paperFormat] [header] [footer] [margin] [orientation] [zoom] [cookie_file] [render_timeout] [timeout]\n     : paper (pdf output) examples: \"5in*7.5in\", \"10cm*20cm\", \"A4\", \"Letter\"");
 }
 
-var // PhantomJS CAN NOT handle images in custom header/footer,
+var input = system.args[1],
+    output = system.args[2],
+
+    margin = system.args[6] || '0cm',
+    orientation = system.args[7] || 'portrait',
+    zoom = system.args[8] || '1.0',
+
+    cookie_file = system.args[9],
+    cookies = {},
+
+    render_timeout = system.args[10] || 10000,
+    timeout = system.args[11] || 90000,
+
+    // PhantomJS CAN NOT handle images in custom header/footer,
     // and this is used to fix the issue.
+    // NOTE: You must pass HTML content if you want to use this feature!
     io_images = [],
 
     is_http = function(s){
@@ -82,7 +101,7 @@ var // PhantomJS CAN NOT handle images in custom header/footer,
         page.content = inject_images(html);
       }
 
-      window.setTimeout(function(){
+      timer = window.setTimeout(function(){
         var output_tmp = output + '_tmp.pdf';
 
         page.render(output_tmp);
@@ -105,22 +124,10 @@ var // PhantomJS CAN NOT handle images in custom header/footer,
 
         phantom_exit()
       }, render_timeout);
-    },
+    };
 
-    input = system.args[1],
-    output = system.args[2],
-
-    margin = system.args[6] || '0cm',
-    orientation = system.args[7] || 'portrait',
-    zoom = system.args[8] || '1.0',
-
-    cookie_file = system.args[9],
-    cookies = {},
-
-    render_timeout = system.args[10] || 10000,
-    timeout = system.args[11] || 90000;
-
-window.setTimeout(function(){
+var overtimer = window.setTimeout(function(){
+  clearTimeout(overtimer);
   phantom_exit(1, "Shit's being weird no result within " + timeout + "ms");
 }, timeout);
 
