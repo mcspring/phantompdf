@@ -1,9 +1,3 @@
-GIT
-  remote: git://github.com/colszowka/phantomjs-gem.git
-  revision: f8a30905c28dac99490efaa608f1af59618616cb
-  specs:
-    phantomjs (1.9.2.0)
-
 PATH
   remote: .
   specs:
@@ -17,20 +11,21 @@ GEM
   specs:
     Ascii85 (1.0.2)
     afm (0.2.0)
-    byebug (2.3.0)
+    byebug (2.3.1)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
     columnize (0.3.6)
     debugger-linecache (1.2.0)
-    diff-lcs (1.2.4)
+    diff-lcs (1.2.5)
     hashery (2.1.1)
-    json (1.8.0)
+    json (1.8.1)
     pdf-reader (1.3.3)
       Ascii85 (~> 1.0.0)
       afm (~> 0.2.0)
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    phantomjs (1.9.2.0)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -38,10 +33,10 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
-    rspec-core (2.14.5)
-    rspec-expectations (2.14.3)
+    rspec-core (2.14.7)
+    rspec-expectations (2.14.4)
       diff-lcs (>= 1.1.3, < 2.0)
-    rspec-mocks (2.14.3)
+    rspec-mocks (2.14.4)
     ruby-rc4 (0.1.5)
     ttfunk (1.0.3)
 
@@ -51,7 +46,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   pdf-reader
-  phantomjs!
+  phantomjs (>= 1.8.0)
   phantompdf!
   rack-test
   rspec
