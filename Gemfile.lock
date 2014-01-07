@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phantompdf (1.1.1)
+    phantompdf (1.2.0)
       json
       phantomjs
       rack
@@ -11,7 +11,7 @@ GEM
   specs:
     Ascii85 (1.0.2)
     afm (0.2.0)
-    byebug (2.3.1)
+    byebug (2.5.0)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
     columnize (0.3.6)
@@ -25,7 +25,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    phantomjs (1.9.2.0)
+    phantomjs (1.9.2.1)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -46,7 +46,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   pdf-reader
-  phantomjs (>= 1.8.0)
+  phantomjs (>= 1.9.2.0)
   phantompdf!
   rack-test
   rspec

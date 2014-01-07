@@ -4,4 +4,4 @@ source 'https://rubygems.org'
 gemspec
 
 # using PhantomJS github repo
-gem 'phantomjs', '>= 1.8.0'
+gem 'phantomjs', '>= 1.9.2.0'
