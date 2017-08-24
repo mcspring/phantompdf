@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phantompdf (1.2.0)
+    phantompdf (1.2.2)
       json
       phantomjs
       rack
@@ -9,44 +9,36 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    Ascii85 (1.0.2)
-    afm (0.2.0)
-    byebug (2.5.0)
-      columnize (~> 0.3.6)
-      debugger-linecache (~> 1.2.0)
-    columnize (0.3.6)
-    debugger-linecache (1.2.0)
-    diff-lcs (1.2.5)
-    hashery (2.1.1)
-    json (1.8.1)
-    pdf-reader (1.3.3)
-      Ascii85 (~> 1.0.0)
-      afm (~> 0.2.0)
-      hashery (~> 2.0)
-      ruby-rc4
-      ttfunk
-    phantomjs (1.9.2.1)
-    rack (1.5.2)
-    rack-test (0.6.2)
-      rack (>= 1.0)
-    rspec (2.14.1)
-      rspec-core (~> 2.14.0)
-      rspec-expectations (~> 2.14.0)
-      rspec-mocks (~> 2.14.0)
-    rspec-core (2.14.7)
-    rspec-expectations (2.14.4)
-      diff-lcs (>= 1.1.3, < 2.0)
-    rspec-mocks (2.14.4)
-    ruby-rc4 (0.1.5)
-    ttfunk (1.0.3)
+    byebug (9.1.0)
+    diff-lcs (1.3)
+    json (2.1.0)
+    phantomjs (2.1.1.0)
+    rack (2.0.3)
+    rack-test (0.7.0)
+      rack (>= 1.0, < 3)
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.6.0)
+    rspec-mocks (3.6.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   byebug
-  pdf-reader
   phantomjs (>= 1.9.2.0)
   phantompdf!
   rack-test
   rspec
+
+BUNDLED WITH
+   1.15.4
