@@ -18,7 +18,7 @@ var page = require('webpage').create(),
 
       phantom.exit(code || 0);
     };
-if (phantom.version.major < 1 || phantom.version.minor < 7) {
+if (phantom.version.major < 1 && phantom.version.minor < 7) {
   phantom_exit(1, "PhantomJS version must greater than 1.7!");
 }
 if (system_args_len < 3 || system_args_len > 12) {

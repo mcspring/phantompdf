@@ -26,7 +26,7 @@ module PhantomPDF
 
     context "#generate" do
       it "should works" do
-        Generator.new(resource).generate.should be_pdf_file
+        expect(Generator.new(resource).generate).to be_pdf_file
       end
 
       context "with output" do
@@ -54,12 +54,13 @@ module PhantomPDF
           }.to raise_error(PhantomPDF::DestinationTypeError)
         end
 
-        pending "should raise PhantomPDF::DestinationPermitError when output is not writable" do
-          File.stub(:writable?, '/tmp') { false }
+        it "should raise PhantomPDF::DestinationPermitError when output is not writable" do
+          allow(File).to receive(:writable?).with('/tmp').and_return(false)
 
           expect{
             Generator.new(resource, @destination)
           }.to raise_error(PhantomPDF::DestinationPermitError)
+          expect(File).to have_received(:writable?)
         end
       end
 
