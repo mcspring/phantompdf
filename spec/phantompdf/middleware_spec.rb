@@ -13,15 +13,15 @@ module PhantomPDF
     it "should works" do
       get '/index.pdf'
 
-      last_response.status.should == 200
-      last_response.body.should be_pdf_string
+      expect(last_response).to be_ok
+      expect(last_response.body).to be_pdf_string
     end
 
     it "should respond with original data without PDF request" do
       get '/'
 
-      last_response.status.should == 200
-      last_response.body.should_not be_pdf_string
+      expect(last_response).to be_ok
+      expect(last_response.body).not_to be_pdf_string
     end
   end
 end

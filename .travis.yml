@@ -1,4 +1,8 @@
 language: ruby
 rvm:
  - 2.4
+before_script: 
+  - sudo apt-get install phantomjs
+  - mkdir -p /home/travis/.phantomjs/$(phantomjs -v)/x86_64-linux/bin/
+  - ln -s $(which phantomjs) /home/travis/.phantomjs/$(phantomjs -v)/x86_64-linux/bin/
 script: bundle exec rspec
