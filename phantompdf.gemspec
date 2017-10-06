@@ -18,12 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = %w(lib)
 
-  spec.add_runtime_dependency 'phantomjs'
-  spec.add_runtime_dependency 'rack'
-  spec.add_runtime_dependency 'json'
+  spec.add_runtime_dependency 'phantomjs', '~> 1.9'
+  spec.add_runtime_dependency 'rack', '~> 2.0'
+  spec.add_runtime_dependency 'json', '~> 2.1'
 
-  spec.add_development_dependency 'rack-test'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'byebug'
-  spec.add_development_dependency 'pdf-reader'
+  spec.add_development_dependency 'rack-test', '~> 0.7'
+  spec.add_development_dependency 'rspec', '~> 3.6'
+  spec.add_development_dependency 'byebug', '~> 9.1'
+  spec.add_development_dependency 'pdf-reader', '~> 2.0'
 end
