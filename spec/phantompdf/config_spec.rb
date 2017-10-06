@@ -8,11 +8,11 @@ module PhantomPDF
 
     context "#phantomjs" do
       it "should respond to :phantomjs" do
-        @config.should respond_to(:phantomjs)
+        expect(@config).to respond_to(:phantomjs)
       end
 
       it "should return phantomjs bin path" do
-        @config.phantomjs.should == Phantomjs.path
+        expect(@config.phantomjs).to eq Phantomjs.path
       end
     end
 
@@ -20,7 +20,7 @@ module PhantomPDF
       method = :"#{method}="
 
       it "should respond to #{method}" do
-        @config.should respond_to(method)
+        expect(@config).to respond_to(method)
       end
     end
   end

@@ -14,75 +14,77 @@ module PhantomPDF
 
     context "#url?" do
       it "should return true for url" do
-        @url_source.url?.should be_true
+        expect(@url_source).to be_url
       end
 
       it "should return false for file" do
-        @file_source.url?.should be_false
+        expect(@file_source).not_to be_url
       end
 
       it "should return false for html" do
-        @html_source.url?.should be_false
+        expect(@html_source).not_to be_url
       end
     end
 
     context "#file?" do
       it "should return false for url" do
-        @url_source.file?.should be_false
+        expect(@url_source).not_to be_file
       end
 
       it "should return true for file" do
-        @file_source.file?.should be_true
+        expect(@file_source).to be_file
       end
 
       it "should return false for html" do
-        @html_source.file?.should be_false
+        expect(@html_source).not_to be_file
       end
 
-      it "should return false if file does not exist" do
-        Source.new('path/to/unexisted/file').file?.should be_false
+      context 'when the file does not exist' do
+        subject { Source.new('path/to/unexisted/file') }
+        
+        it { is_expected.not_to be_file }
       end
     end
 
     context "#html?" do
       it "should return false for url" do
-        @url_source.html?.should be_false
+        expect(@url_source).not_to be_html
       end
 
       it "should return false for file" do
-        @file_source.html?.should be_false
+        expect(@file_source).not_to be_html
       end
 
       it "should return true for html" do
-        @html_source.html?.should be_true
+        expect(@html_source).to be_html
       end
     end
 
     context "#valid?" do
       it "should return true for url" do
-        @url_source.valid?.should be_true
+        expect(@url_source).to be_valid
       end
 
       it "should return true for file" do
-        @file_source.valid?.should be_true
+        expect(@file_source).to be_valid
       end
 
       it "should return true for html" do
-        @html_source.valid?.should be_true
+        expect(@html_source).to be_valid
       end
     end
 
     context "#to_s" do
       it "should return url for url source" do
-        @url_source.to_s.should == @url
+        expect(@url_source.to_s).to eq @url
       end
 
       it "should return file path for file source" do
-        @file_source.to_s.should == @file
+        expect(@file_source.to_s).to eq @file
       end
 
       it "should return html string for html source" do
-        @html_source.to_s.should == @html
+        expect(@html_source.to_s).to eq @html
       end
     end
   end

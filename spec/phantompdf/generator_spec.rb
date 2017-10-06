@@ -26,7 +26,7 @@ module PhantomPDF
 
     context "#generate" do
       it "should works" do
-        Generator.new(resource).generate.should be_pdf_file
+        expect(Generator.new(resource).generate).to be_pdf_file
       end
 
       context "with output" do
@@ -41,11 +41,11 @@ module PhantomPDF
         end
 
         it "should generate pdf file following output" do
-          File.exist?(@destination).should be_false
+          expect(File.exist?(@destination)).to be false
           Generator.new(resource, @destination).generate
-          File.exist?(@destination).should be_true
+          expect(File.exist?(@destination)).to be true
 
-          @destination.should be_pdf_file
+          expect(@destination).to be_pdf_file
         end
 
         it "should raise PhantomPDF::DestinationTypeError when output is not a string" do
@@ -54,12 +54,13 @@ module PhantomPDF
           }.to raise_error(PhantomPDF::DestinationTypeError)
         end
 
-        pending "should raise PhantomPDF::DestinationPermitError when output is not writable" do
-          File.stub(:writable?, '/tmp') { false }
+        it "should raise PhantomPDF::DestinationPermitError when output is not writable" do
+          allow(File).to receive(:writable?).with('/tmp').and_return(false)
 
           expect{
             Generator.new(resource, @destination)
           }.to raise_error(PhantomPDF::DestinationPermitError)
+          expect(File).to have_received(:writable?)
         end
       end
 
@@ -78,7 +79,7 @@ module PhantomPDF
         it "should support custom header" do
           header = 'Hello, PhantomPDF header!'
 
-          Generator.new(resource, @destination, {:header => header}).generate.should be_pdf_file
+          expect(Generator.new(resource, @destination, {:header => header}).generate).to be_pdf_file
 
           # we CANNOT reader the file as PDF
           # pdf_content = PDF::Reader.new(@destination).page(1).text
@@ -88,7 +89,7 @@ module PhantomPDF
         it "should support images in custom header" do
           header = "1.8cm*PhantomPDF header!<img src=\"#{@custom_image}\" style=\"float:right;\"/>"
 
-          Generator.new(resource, @destination, {:header => header}).generate.should be_pdf_file
+          expect(Generator.new(resource, @destination, {:header => header}).generate).to be_pdf_file
 
           # we CANNOT reader the file as PDF
           # pdf_content = PDF::Reader.new(@destination).page(1).text
@@ -97,8 +98,8 @@ module PhantomPDF
 
         it "should support custom footer" do
           footer = 'Hello, PhantomPDF footer!'
-
-          Generator.new(resource, @destination, {:footer => footer}).generate.should be_pdf_file
+          
+          expect(Generator.new(resource, @destination, {:footer => footer}).generate).to be_pdf_file
 
           # we CANNOT reader the file as PDF
           # pdf_content = PDF::Reader.new(@destination).page(1).text
@@ -108,7 +109,7 @@ module PhantomPDF
         it "should support images in custom footer" do
           footer = "1.8cm*PhantomPDF footer!<img src=\"#{@custom_image}\" style=\"float:right;\"/>"
 
-          Generator.new(resource, @destination, {:footer => footer}).generate.should be_pdf_file
+          expect(Generator.new(resource, @destination, {:footer => footer}).generate).to be_pdf_file
 
           # we CANNOT reader the file as PDF
           # pdf_content = PDF::Reader.new(@destination).page(1).text
@@ -119,10 +120,10 @@ module PhantomPDF
 
     context "#generate!" do
       it "should raise PhantomPDF::RenderingError when failed to generate" do
-        $?.stub(:exitstatus) { 1 }
+        allow($?).to receive(:exitstatus).and_return(1)
 
         generator = Generator.new(resource)
-        generator.stub(:run) { 'rendering error' }
+        allow(generator).to receive(:run).and_return('rendering error')
 
         expect{
           generator.generate!
@@ -132,7 +133,7 @@ module PhantomPDF
 
     context "#to_string" do
       it "should return string of PDF file" do
-        Generator.new(resource).to_string.should be_pdf_string
+        expect(Generator.new(resource).to_string).to be_pdf_string
       end
     end
   end
